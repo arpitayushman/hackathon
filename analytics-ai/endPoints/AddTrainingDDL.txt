@@ -1,0 +1,33 @@
+Request ->
+POST /api/v0/train HTTP/1.1
+Host: localhost:5000
+Content-Length: 10
+sec-ch-ua-platform: "Windows"
+Accept-Language: en-US,en;q=0.9
+sec-ch-ua: "Chromium";v="133", "Not(A:Brand";v="99"
+Content-Type: application/json
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36
+Accept: */*
+Origin: http://localhost:5000
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: cors
+Sec-Fetch-Dest: empty
+Referer: http://localhost:5000/
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+
+{"ddl":""}
+
+
+Response ->
+HTTP/1.1 200 OK
+Server: Werkzeug/3.0.3 Python/3.12.7
+Date: Wed, 05 Mar 2025 06:50:29 GMT
+Content-Type: application/json
+Content-Length: 17
+Connection: close
+
+{
+  "id": null
+}
