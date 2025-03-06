@@ -31,13 +31,13 @@ const ChatList = () => {
             ))}
       </div>
       <hr />
-      <div className="upgrade">
+      {/* <div className="upgrade">
         <img src="/logo.png" alt="" />
         <div className="texts">
           <span>Upgrade to Lama AI Pro</span>
           <span>Get unlimited access to all features</span>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

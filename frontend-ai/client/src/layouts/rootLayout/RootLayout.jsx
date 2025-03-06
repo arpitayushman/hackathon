@@ -4,7 +4,8 @@ import { ClerkProvider, SignedIn, UserButton } from "@clerk/clerk-react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 // const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 const PUBLISHABLE_KEY="pk_test_d2VsbC1jaWNhZGEtODguY2xlcmsuYWNjb3VudHMuZGV2JA";
-
+// admin@abc .com
+// Runtimeterror
 if (!PUBLISHABLE_KEY) {
   throw new Error("Missing Publishable Key");
 }
@@ -19,7 +20,7 @@ const RootLayout = () => {
           <header>
             <Link to="/" className="logo">
               <img src="/logo.png" alt="" />
-              <span>LAMA AI</span>
+              <span>RuntimeTerror AI</span>
             </Link>
             <div className="user">
               <SignedIn>
