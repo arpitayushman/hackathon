@@ -7,16 +7,20 @@
 
   .wrapper{
     flex:1;
-    overflow: scroll;
+    overflow-y: auto; 
     width: 100%;
     display: flex;
     justify-content: center;
+      scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+
 
     .chat{
-      width: 50%;
+      width: 95%;
       display: flex;
       flex-direction: column;
       gap: 20px;
+      padding: 10px;
 
       p,li{
         margin: 10px 0px;
@@ -34,4 +38,8 @@
       }
     }
   }
+  .wrapper::-webkit-scrollbar {
+    display: none; /* Chrome, Safari */
+  }
 }
+

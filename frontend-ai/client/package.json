@@ -14,11 +14,16 @@
     "@google/generative-ai": "^0.15.0",
     "@tanstack/react-query": "^5.51.9",
     "imagekitio-react": "^4.1.0",
+    "jszip": "^3.10.1",
+    "plotly.js": "^3.0.1",
     "react": "19.0.0-rc-8b08e99e-20240713",
     "react-dom": "19.0.0-rc-8b08e99e-20240713",
     "react-markdown": "^9.0.1",
+    "react-plotly.js": "^2.6.0",
     "react-router-dom": "^6.25.0",
-    "react-type-animation": "^3.2.0"
+    "react-type-animation": "^3.2.0",
+    "uuid": "^11.1.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",

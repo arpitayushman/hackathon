@@ -40,15 +40,15 @@ predefined_compliance = {
 def generate_random_data_bbps():
     bou_id_temp = random.choice(list(predefined_map.keys()))
     ref_id = f"REF{generate_random_alphanumeric(35)}".upper()
-    txn_type = "FETCH"
+    txn_type = "PAYMENT"
     msg_id = f"MSG{generate_random_alphanumeric(35)}".upper()
-    mti = "FETCH"
+    mti = "PAYMENT"
     blr_category = category_map.get(predefined_map.get(bou_id_temp))
     response_code = random.choice(["000", "200", "001"])
     payment_channel = random.choice(["Internet", "Mobile", "POS", "ATM", "Agent", "Branch"])
     cou_id = random.choice(["PP01", "IC01", "BD01", "EU01","MK01","KV01","HD01","UJ01","GP01","JH01"])
     bou_id = bou_id_temp
-    bou_status = response_code=="000" and "SUCCESS" or "FAILURE"
+    bou_status = "SUCCESS" if response_code=="000" else "FAILURE"
     cust_mobile_num = f"9{random.randint(100000000, 999999999)}"
     tran_ref_id = cou_id + f"TRN{generate_random_alphanumeric(8)}".upper()
     blr_id = predefined_map.get(bou_id)
@@ -75,11 +75,11 @@ def generate_random_data_bbps():
     txn_amount = f"{round(random.uniform(10, 1000), 2)}"
     on_us = random.choice(["Y", "N"])
     payment_mode = random.choice(["UPI", "Debit_Card", "Credit_Card", "Net_Banking", "Wallet", "Cash","IMPS","CBDC","AEPS"])
-    
+    status = "SUCCESS" if response_code=="000" else "FAILURE"
     return (ref_id, txn_type, msg_id, mti, blr_category, response_code, payment_channel, cou_id, bou_id,
             bou_status, cust_mobile_num, tran_ref_id, blr_id, agent_id, last_upd_host, last_upd_port,
             last_upd_site_cd, crtn_ts, settlement_cycle_id, complaince_cd, complaince_reason,
-            mandatory_cust_params, initiating_ai, txn_amount, on_us, payment_mode)
+            mandatory_cust_params, initiating_ai, txn_amount, on_us, payment_mode, status)
 
 # Helper function to generate random alphanumeric string
 def generate_random_alphanumeric(length=35):
@@ -90,11 +90,11 @@ header = [
     "ref_id", "txn_type", "msg_id", "mti", "blr_category", "response_code", "payment_channel", "cou_id", "bou_id",
     "bou_status", "cust_mobile_num", "tran_ref_id", "blr_id", "agent_id", "last_upd_host", "last_upd_port",
     "last_upd_site_cd", "crtn_ts", "settlement_cycle_id", "complaince_cd", "complaince_reason", 
-    "mandatory_cust_params", "initiating_ai", "txn_amount", "on_us", "payment_mode"
+    "mandatory_cust_params", "initiating_ai", "txn_amount", "on_us", "payment_mode","status"
 ]
 
 # Writing the data to a CSV file
-with open("bbps_fetch_txn_report.csv", mode="w", newline="") as file:
+with open("bbps_txn_report.csv", mode="w", newline="") as file:
     writer = csv.writer(file)
     writer.writerow(header)  # Write the header row
     
@@ -102,4 +102,4 @@ with open("bbps_fetch_txn_report.csv", mode="w", newline="") as file:
         data = generate_random_data_bbps()
         writer.writerow(data)
 
-print("10000 rows of data have been generated and saved to bbps_fetch_txn_report.csv")
+print("10000 rows of data have been generated and saved to bbps_txn_report.csv")

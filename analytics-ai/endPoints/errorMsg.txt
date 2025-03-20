@@ -1,0 +1,14 @@
+HTTP/1.1 200 OK
+Server: Werkzeug/3.0.3 Python/3.12.7
+Date: Mon, 17 Mar 2025 06:30:12 GMT
+Content-Type: application/json
+Content-Length: 309
+Access-Control-Allow-Origin: http://localhost:5173
+Access-Control-Allow-Credentials: true
+Connection: close
+
+{
+  "id": "81b837be-2d6d-49e6-bc4e-0be172bbb23c",
+  "text": "The provided context does not include sufficient information regarding the categories and their growth over time, such as timestamps or metrics to measure growth. Therefore, I cannot generate a SQL query to answer the question.",
+  "type": "sql"
+}

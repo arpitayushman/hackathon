@@ -5,11 +5,12 @@
   height: 100%;
 
   .menu {
-    flex: 1;
+    flex: 0.1;
   }
 
   .content {
-    flex: 4;
+    flex: 10;
     background-color: #12101b;
+    height: 100%;
   }
 }
