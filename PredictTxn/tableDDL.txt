@@ -1,0 +1,679 @@
+
+CREATE TABLE public.bbps_ou_details (
+	ou_id varchar(4) NOT NULL,
+	ou_type varchar(4) NULL,
+	ou_name varchar(100) NULL,
+	ou_effctv_from varchar(8) NULL,
+	ou_effctv_to varchar(8) NULL,
+	ou_endpoint_url varchar(100) NULL,
+	ou_company_tan_no varchar(20) NULL,
+	ou_uaadhar varchar(30) NULL,
+    entity_status varchar(20) NOT NULL,
+	crtn_ts timestamp NULL,
+	crtn_user_id varchar(45) NULL,
+	updt_ts timestamp NULL,
+	updt_user_id varchar(45) NULL,
+	gstin varchar(30) NULL,
+	gst_state_code varchar(3) NULL,
+	ou_group_name varchar(8) NULL,
+	ndc_group varchar(4) NULL,
+	is_parent_ou varchar(1) NULL,
+	upms_request_response_format varchar(10) NULL,
+	upms_end_point_url varchar(100) NULL,
+	upms_supports_cou_reg_api bool NULL,
+	upms_supports_blr_reg_api bool NULL,
+	CONSTRAINT bbps_ou_details_pkey PRIMARY KEY (ou_id)
+);
+
+
+CREATE TABLE public.bbps_biller_details (
+	blr_id varchar(30) NOT NULL,
+	blr_name varchar(100) NULL,
+	blr_alias_name varchar(100) NULL,
+	blr_category_name varchar(100) NULL,
+	blr_linked_ou_default varchar(30) NULL,
+	blr_linked_ou_backup_1 varchar(30) NULL,
+	blr_linked_ou_backup_2 varchar(30) NULL,
+	blr_linked_ou_backup_3 varchar(30) NULL,
+	parent_blr_id varchar(30) NULL,
+	is_parent_blr bpchar(1) NULL,
+	blr_mode varchar(20) NULL,
+	blr_accepts_adhoc varchar(1) NULL,
+	blr_payment_modes json NULL,
+	blr_payment_channels json NULL,
+	blr_effctv_from varchar(8) NULL,
+	blr_effctv_to varchar(8) NULL,
+	blr_tan varchar(20) NULL,
+	blr_uaadhaar varchar(30) NULL,
+	blr_customer_params json NULL,
+	entity_status varchar(20) NOT NULL,
+	crtn_ts timestamp NULL,
+	crtn_user_id varchar(45) NULL,
+	updt_ts timestamp NULL,
+	blr_pmt_amt_exactness varchar(10) NULL,
+	fetch_requirement varchar(20) NULL,
+	support_validation_api varchar(20) NULL,
+	support_402_api_flag bool NULL,
+	blr_timeout int2 NULL,
+	blr_payment_modes_402 json NULL,
+	plan_mdm_requirement varchar(20) NULL,
+	upms_support_presentment_registration_flag bool NULL,
+	CONSTRAINT bbps_biller_details_pkey PRIMARY KEY (blr_id)
+);
+
+
+CREATE TABLE public.bbps_certificates_details (
+    cert_id int8 NOT NULL,
+    ou_id varchar(4) NULL,
+    cert_type varchar(10) NULL,
+    effctv_from varchar(8) NULL,
+    effctv_to varchar(8) NULL,
+    entity_status varchar(20) NOT NULL,
+    crtn_ts timestamp NULL,
+    crtn_user_id varchar(45) NULL,
+    CONSTRAINT bbps_certificates_details_pkey PRIMARY KEY (cert_id, entity_status),
+    CONSTRAINT fk_bbps_certificates_details_ou FOREIGN KEY (ou_id) 
+        REFERENCES public.bbps_ou_details (ou_id) 
+        ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+
+
+CREATE TABLE IF NOT EXISTS public.bbps_txn_report
+(
+    ref_id character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    txn_type character varying(20) COLLATE pg_catalog."default" NOT NULL,
+    msg_id character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    mti character varying(30) COLLATE pg_catalog."default",
+    blr_category character varying(100) COLLATE pg_catalog."default",
+    response_code character varying(10) COLLATE pg_catalog."default",
+    payment_channel character varying(30) COLLATE pg_catalog."default",
+    cou_id character varying(20) COLLATE pg_catalog."default",
+    bou_id character varying(20) COLLATE pg_catalog."default",
+    bou_status character varying(20) COLLATE pg_catalog."default",
+    cust_mobile_num character varying(20) COLLATE pg_catalog."default",
+    tran_ref_id character varying(20) COLLATE pg_catalog."default",
+    blr_id character varying(30) COLLATE pg_catalog."default",
+    agent_id character varying(30) COLLATE pg_catalog."default",
+    last_upd_host character varying(50) COLLATE pg_catalog."default",
+    last_upd_port character varying(5) COLLATE pg_catalog."default",
+    last_upd_site_cd character varying(5) COLLATE pg_catalog."default",
+    crtn_ts timestamp without time zone,
+    settlement_cycle_id character varying(30) COLLATE pg_catalog."default",
+    complaince_cd character varying(20) COLLATE pg_catalog."default",
+    complaince_reason character varying(100) COLLATE pg_catalog."default",
+    mandatory_cust_params character varying(1000) COLLATE pg_catalog."default",
+    initiating_ai character varying(10) COLLATE pg_catalog."default",
+    txn_amount numeric,
+    on_us character varying(1) COLLATE pg_catalog."default",
+    payment_mode character varying(30) COLLATE pg_catalog."default",
+    status character varying(20) COLLATE pg_catalog."default",
+    CONSTRAINT bbps_txn_report_pkey PRIMARY KEY (ref_id, txn_type),
+    CONSTRAINT fk_bbps_txn_report_biller FOREIGN KEY (blr_id)
+        REFERENCES public.bbps_biller_details (blr_id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE SET NULL,
+    CONSTRAINT fk_bbps_txn_report_ou FOREIGN KEY (cou_id)
+        REFERENCES public.bbps_ou_details (ou_id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
+)
+
+ALTER TABLE public.bbps_txn_report
+ADD CONSTRAINT fk_bbps_txn_report_biller
+FOREIGN KEY (blr_id)
+REFERENCES public.bbps_biller_details (blr_id)
+ON DELETE SET NULL
+ON UPDATE CASCADE;
+
+ALTER TABLE public.bbps_txn_report
+ADD CONSTRAINT fk_bbps_txn_report_ou
+FOREIGN KEY (cou_id)
+REFERENCES public.bbps_ou_details (ou_id)
+ON DELETE SET NULL
+ON UPDATE CASCADE;
+
+INSERT INTO public.bbps_ou_details (
+    ou_id, ou_type, ou_name, ou_effctv_from, ou_effctv_to, ou_endpoint_url, 
+    ou_company_tan_no, ou_uaadhar, entity_status, crtn_ts, crtn_user_id, 
+    updt_ts, updt_user_id, gstin, gst_state_code, ou_group_name, ndc_group, 
+    is_parent_ou, upms_request_response_format, upms_end_point_url, 
+    upms_supports_cou_reg_api, upms_supports_blr_reg_api
+) VALUES
+(
+    'PP01', 'COU', 'Phonepay', '20230101', '20260831', 'http://phonepay.com',
+    'TAN12345', 'UA1234567890', 'ACTIVE', '2023-01-01 10:00:00', 'user1',
+    '2023-01-01 12:00:00', 'superadmin', 'GSTIN12345', 'KA', 'PP01', 'PP01',
+    'Y', 'JSON', 'http://upmsphonepay.com', true, false
+);
+
+INSERT INTO public.bbps_ou_details (
+    ou_id, ou_type, ou_name, ou_effctv_from, ou_effctv_to, ou_endpoint_url, 
+    ou_company_tan_no, ou_uaadhar, entity_status, crtn_ts, crtn_user_id, 
+    updt_ts, updt_user_id, gstin, gst_state_code, ou_group_name, ndc_group, 
+    is_parent_ou, upms_request_response_format, upms_end_point_url, 
+    upms_supports_cou_reg_api, upms_supports_blr_reg_api
+) VALUES
+(
+    'GP01', 'COU', 'Greater Bank', '20230101', '20271131', 'http://greaterbank.com',
+    'TAN67890', 'UA0987654321', 'ACTIVE', '2023-02-01 14:30:00', 'user2',
+    '2023-02-01 16:45:00', 'user2', 'GSTIN67890', 'TN', 'GP01', 'GP01',
+    'Y', 'XML', 'http://upmsgreaterbank.com', false, true
+);
+
+INSERT INTO public.bbps_ou_details (
+    ou_id, ou_type, ou_name, ou_effctv_from, ou_effctv_to, ou_endpoint_url, 
+    ou_company_tan_no, ou_uaadhar, entity_status, crtn_ts, crtn_user_id, 
+    updt_ts, updt_user_id, gstin, gst_state_code, ou_group_name, ndc_group, 
+    is_parent_ou, upms_request_response_format, upms_end_point_url, 
+    upms_supports_cou_reg_api, upms_supports_blr_reg_api
+) VALUES
+(
+    'IC01', 'COU', 'ICICI Bank Limited', '20230101', '20290224', 'http://iciciendpoint.com',
+    'TAN11223', 'UA1234567890', 'ACTIVE', '2023-03-01 09:15:00', 'user3',
+    '2023-03-01 11:00:00', 'superadmin', 'GSTIN11223', 'MH', 'IC01', 'IC01',
+    'Y', 'JSON', 'http://upmsiciciendpoint.com', true, false
+);
+
+INSERT INTO public.bbps_ou_details (
+    ou_id, ou_type, ou_name, ou_effctv_from, ou_effctv_to, ou_endpoint_url, 
+    ou_company_tan_no, ou_uaadhar, entity_status, crtn_ts, crtn_user_id, 
+    updt_ts, updt_user_id, gstin, gst_state_code, ou_group_name, ndc_group, 
+    is_parent_ou, upms_request_response_format, upms_end_point_url, 
+    upms_supports_cou_reg_api, upms_supports_blr_reg_api
+) VALUES
+(
+    'JH01', 'BOU', 'JH01', '20230101', '20280108', 'http://JH01.com',
+    'TAN44556', 'UA0987654321', 'ACTIVE', '2023-04-01 08:45:00', 'cuadmin',
+    '2023-04-01 10:30:00', 'cuadmin', 'GSTIN44556', 'DL', 'JH01', 'JH01',
+    'Y', 'JSON', 'http://JH01.com', false, true
+);
+
+INSERT INTO public.bbps_ou_details (
+    ou_id, ou_type, ou_name, ou_effctv_from, ou_effctv_to, ou_endpoint_url, 
+    ou_company_tan_no, ou_uaadhar, entity_status, crtn_ts, crtn_user_id, 
+    updt_ts, updt_user_id, gstin, gst_state_code, ou_group_name, ndc_group, 
+    is_parent_ou, upms_request_response_format, upms_end_point_url, 
+    upms_supports_cou_reg_api, upms_supports_blr_reg_api
+) VALUES
+(
+    'BD01', 'COU', 'Billdesk', '20230101', '20231031', 'http://Billdesk.com',
+    'TAN78901', 'UA2345678901', 'ACTIVE', '2023-05-01 10:00:00', 'superadmin',
+    '2023-05-01 12:15:00', 'cuadmin', 'GSTIN78901', 'UP', 'BD01', 'BD01',
+    'Y', 'JSON', 'http://upmsBilldesk.com', true, false
+);
+
+
+INSERT INTO public.bbps_ou_details (
+    ou_id, ou_type, ou_name, ou_effctv_from, ou_effctv_to, ou_endpoint_url, 
+    ou_company_tan_no, ou_uaadhar, entity_status, crtn_ts, crtn_user_id, 
+    updt_ts, updt_user_id, gstin, gst_state_code, ou_group_name, ndc_group, 
+    is_parent_ou, upms_request_response_format, upms_end_point_url, 
+    upms_supports_cou_reg_api, upms_supports_blr_reg_api
+) VALUES
+(
+    'KV01', 'COU', 'Karur vysya', '20230101', '20270931', 'http://kvbank.com',
+    'TAN78901', 'UA2345678901', 'ACTIVE', '2023-05-01 10:00:00', 'superadmin',
+    '2023-05-01 12:15:00', 'cuadmin', 'GSTIN78901', 'UP', 'KV01', 'KV01',
+    'Y', 'JSON', 'http://kvbank.com', true, false
+);
+
+INSERT INTO public.bbps_ou_details (
+    ou_id, ou_type, ou_name, ou_effctv_from, ou_effctv_to, ou_endpoint_url, 
+    ou_company_tan_no, ou_uaadhar, entity_status, crtn_ts, crtn_user_id, 
+    updt_ts, updt_user_id, gstin, gst_state_code, ou_group_name, ndc_group, 
+    is_parent_ou, upms_request_response_format, upms_end_point_url, 
+    upms_supports_cou_reg_api, upms_supports_blr_reg_api
+) VALUES
+(
+    'EU01', 'COU', 'Euronet', '20230101', '20270931', 'http://Euronet.com',
+    'TAN78901', 'UA2345678901', 'ACTIVE', '2023-05-01 10:00:00', 'superadmin',
+    '2023-05-01 12:15:00', 'cuadmin', 'GSTIN78901', 'UP', 'EU01', 'EU01',
+    'Y', 'JSON', 'http://upmseuronet.com', true, false
+);
+
+INSERT INTO public.bbps_ou_details (
+    ou_id, ou_type, ou_name, ou_effctv_from, ou_effctv_to, ou_endpoint_url, 
+    ou_company_tan_no, ou_uaadhar, entity_status, crtn_ts, crtn_user_id, 
+    updt_ts, updt_user_id, gstin, gst_state_code, ou_group_name, ndc_group, 
+    is_parent_ou, upms_request_response_format, upms_end_point_url, 
+    upms_supports_cou_reg_api, upms_supports_blr_reg_api
+) VALUES
+(
+    'MK01', 'BOU', 'mobikwik', '20230101', '20270722', 'http://mobikwik.com',
+    'TAN78901', 'UA2345678901', 'ACTIVE', '2023-05-01 10:00:00', 'superadmin',
+    '2023-05-01 12:15:00', 'cuadmin', 'GSTIN78901', 'UP', 'MK01', 'MK01',
+    'Y', 'JSON', 'http://upmsmobikwik.com', true, false
+);
+
+
+INSERT INTO public.bbps_ou_details (
+    ou_id, ou_type, ou_name, ou_effctv_from, ou_effctv_to, ou_endpoint_url, 
+    ou_company_tan_no, ou_uaadhar, entity_status, crtn_ts, crtn_user_id, 
+    updt_ts, updt_user_id, gstin, gst_state_code, ou_group_name, ndc_group, 
+    is_parent_ou, upms_request_response_format, upms_end_point_url, 
+    upms_supports_cou_reg_api, upms_supports_blr_reg_api
+) VALUES
+(
+    'HD01', 'COU', 'HDFC bank', '20230101', '20270722', 'http://hdfc.com',
+    'TAN78901', 'UA2345678901', 'ACTIVE', '2023-05-01 10:00:00', 'superadmin',
+    '2023-05-01 12:15:00', 'cuadmin', 'GSTIN78901', 'UP', 'HD01', 'HD01',
+    'Y', 'JSON', 'http://upmshdfc.com', true, false
+);
+
+INSERT INTO public.bbps_ou_details (
+    ou_id, ou_type, ou_name, ou_effctv_from, ou_effctv_to, ou_endpoint_url, 
+    ou_company_tan_no, ou_uaadhar, entity_status, crtn_ts, crtn_user_id, 
+    updt_ts, updt_user_id, gstin, gst_state_code, ou_group_name, ndc_group, 
+    is_parent_ou, upms_request_response_format, upms_end_point_url, 
+    upms_supports_cou_reg_api, upms_supports_blr_reg_api
+) VALUES
+(
+    'UJ01', 'COU', 'Ujwal small finance bank', '20230101', '20280727', 'http://Ujwal.com',
+    'TAN78901', 'UA2345678901', 'ACTIVE', '2023-05-01 10:00:00', 'superadmin',
+    '2023-05-01 12:15:00', 'cuadmin', 'GSTIN78901', 'UP', 'UJ01', 'UJ01',
+    'Y', 'JSON', 'http://upmsUjwal.com', true, false
+);
+
+select * from public.bbps_ou_details;
+
+INSERT INTO public.bbps_certificates_details (
+    cert_id, ou_id, cert_type, effctv_from, effctv_to, entity_status, 
+    crtn_ts, crtn_user_id
+) VALUES
+(
+    1, 'PP01', 'signer', '20230101', '20260731', 'ACTIVE', 
+    '2023-01-01 10:00:00', 'PP01'
+);
+
+INSERT INTO public.bbps_certificates_details (
+    cert_id, ou_id, cert_type, effctv_from, effctv_to, entity_status, 
+    crtn_ts, crtn_user_id
+) VALUES
+(
+    2, 'PP01', 'ssl', '20230101', '20260731', 'ACTIVE', 
+    '2023-01-01 10:00:00', 'PP01'
+);
+
+INSERT INTO public.bbps_certificates_details (
+    cert_id, ou_id, cert_type, effctv_from, effctv_to, entity_status, 
+    crtn_ts, crtn_user_id
+) VALUES
+(
+    3, 'GP01', 'signer', '20230101', '20240601', 'ACTIVE', 
+    '2023-01-01 10:00:00', 'GP01'
+);
+
+INSERT INTO public.bbps_certificates_details (
+    cert_id, ou_id, cert_type, effctv_from, effctv_to, entity_status, 
+    crtn_ts, crtn_user_id
+) VALUES
+(
+    4, 'GP01', 'ssl', '20230101', '202406301', 'ACTIVE', 
+    '2023-01-01 10:00:00', 'GP01'
+);
+
+
+INSERT INTO public.bbps_certificates_details (
+    cert_id, ou_id, cert_type, effctv_from, effctv_to, entity_status, 
+    crtn_ts, crtn_user_id
+) VALUES
+(
+    5, 'IC01', 'signer', '20230101', '20240601', 'ACTIVE', 
+    '2023-01-01 10:00:00', 'IC01'
+);
+
+INSERT INTO public.bbps_certificates_details (
+    cert_id, ou_id, cert_type, effctv_from, effctv_to, entity_status, 
+    crtn_ts, crtn_user_id
+) VALUES
+(
+    6, 'IC01', 'ssl', '20230101', '20240601', 'ACTIVE', 
+    '2023-01-01 10:00:00', 'IC01'
+);
+
+
+
+INSERT INTO public.bbps_certificates_details (
+    cert_id, ou_id, cert_type, effctv_from, effctv_to, entity_status, 
+    crtn_ts, crtn_user_id
+) VALUES
+(
+    7, 'JH01', 'signer', '20230101', '20280601', 'ACTIVE', 
+    '2023-01-01 10:00:00', 'JH01'
+);
+
+INSERT INTO public.bbps_certificates_details (
+    cert_id, ou_id, cert_type, effctv_from, effctv_to, entity_status, 
+    crtn_ts, crtn_user_id
+) VALUES
+(
+    8, 'JH01', 'ssl', '20230101', '20260601', 'ACTIVE', 
+    '2023-01-01 10:00:00', 'JH01'
+);
+
+INSERT INTO public.bbps_certificates_details (
+    cert_id, ou_id, cert_type, effctv_from, effctv_to, entity_status, 
+    crtn_ts, crtn_user_id
+) VALUES
+(
+    9, 'BD01', 'signer', '20230101', '20280601', 'ACTIVE', 
+    '2023-01-01 10:00:00', 'BD01'
+);
+
+INSERT INTO public.bbps_certificates_details (
+    cert_id, ou_id, cert_type, effctv_from, effctv_to, entity_status, 
+    crtn_ts, crtn_user_id
+) VALUES
+(
+    10, 'BD01', 'ssl', '20230101', '20260601', 'ACTIVE', 
+    '2023-01-01 10:00:00', 'BD01'
+);
+
+
+INSERT INTO public.bbps_certificates_details (
+    cert_id, ou_id, cert_type, effctv_from, effctv_to, entity_status, 
+    crtn_ts, crtn_user_id
+) VALUES
+(
+    11, 'KV01', 'signer', '20230101', '20270809', 'ACTIVE', 
+    '2023-01-01 10:00:00', 'KV01'
+);
+
+INSERT INTO public.bbps_certificates_details (
+    cert_id, ou_id, cert_type, effctv_from, effctv_to, entity_status, 
+    crtn_ts, crtn_user_id
+) VALUES
+(
+    12, 'KV01', 'ssl', '20230101', '20270809', 'ACTIVE', 
+    '2023-01-01 10:00:00', 'KV01'
+);
+
+
+INSERT INTO public.bbps_certificates_details (
+    cert_id, ou_id, cert_type, effctv_from, effctv_to, entity_status, 
+    crtn_ts, crtn_user_id
+) VALUES
+(
+    13, 'EU01', 'signer', '20230101', '20260619', 'ACTIVE', 
+    '2023-01-01 10:00:00', 'EU01'
+);
+
+INSERT INTO public.bbps_certificates_details (
+    cert_id, ou_id, cert_type, effctv_from, effctv_to, entity_status, 
+    crtn_ts, crtn_user_id
+) VALUES
+(
+    14, 'EU01', 'ssl', '20230101', '20260619', 'ACTIVE', 
+    '2023-01-01 10:00:00', 'EU01'
+);
+
+
+
+INSERT INTO public.bbps_certificates_details (
+    cert_id, ou_id, cert_type, effctv_from, effctv_to, entity_status, 
+    crtn_ts, crtn_user_id
+) VALUES
+(
+    15, 'MK01', 'signer', '20230101', '20261019', 'ACTIVE', 
+    '2023-01-01 10:00:00', 'MK01'
+);
+
+INSERT INTO public.bbps_certificates_details (
+    cert_id, ou_id, cert_type, effctv_from, effctv_to, entity_status, 
+    crtn_ts, crtn_user_id
+) VALUES
+(
+    16, 'MK01', 'ssl', '20230101', '20261019', 'ACTIVE', 
+    '2023-01-01 10:00:00', 'MK01'
+);
+
+INSERT INTO public.bbps_certificates_details (
+    cert_id, ou_id, cert_type, effctv_from, effctv_to, entity_status, 
+    crtn_ts, crtn_user_id
+) VALUES
+(
+    17, 'HD01', 'signer', '20230101', '20261019', 'ACTIVE', 
+    '2023-01-01 10:00:00', 'HD01'
+);
+
+INSERT INTO public.bbps_certificates_details (
+    cert_id, ou_id, cert_type, effctv_from, effctv_to, entity_status, 
+    crtn_ts, crtn_user_id
+) VALUES
+(
+    18, 'HD01', 'ssl', '20230101', '20261019', 'ACTIVE', 
+    '2023-01-01 10:00:00', 'HD01'
+);
+
+INSERT INTO public.bbps_certificates_details (
+    cert_id, ou_id, cert_type, effctv_from, effctv_to, entity_status, 
+    crtn_ts, crtn_user_id
+) VALUES
+(
+    19, 'UJ01', 'signer', '20230101', '20281019', 'ACTIVE', 
+    '2023-01-01 10:00:00', 'UJ01'
+);
+
+INSERT INTO public.bbps_certificates_details (
+    cert_id, ou_id, cert_type, effctv_from, effctv_to, entity_status, 
+    crtn_ts, crtn_user_id
+) VALUES
+(
+    20, 'UJ01', 'ssl', '20230101', '20281019', 'ACTIVE', 
+    '2023-01-01 10:00:00', 'UJ01'
+);
+
+INSERT INTO public.bbps_biller_details (
+    blr_id, blr_name, blr_alias_name, blr_category_name, blr_linked_ou_default, 
+    blr_linked_ou_backup_1, blr_linked_ou_backup_2, blr_linked_ou_backup_3, 
+    parent_blr_id, is_parent_blr, blr_mode, blr_accepts_adhoc, blr_payment_modes, 
+    blr_payment_channels, blr_effctv_from, blr_effctv_to, blr_tan, blr_uaadhaar, 
+    blr_customer_params, entity_status, crtn_ts, crtn_user_id, updt_ts, 
+    blr_pmt_amt_exactness, fetch_requirement, support_validation_api, 
+    support_402_api_flag, blr_timeout, blr_payment_modes_402, plan_mdm_requirement, 
+    upms_support_presentment_registration_flag
+) VALUES
+(
+    'SURYOOOOONATLE', 'SURYOOOOONATLE', 'B1', 'Water', 'PU51', 'PU51', 'PU51', 'PU51', 
+    'PU51', 'Y', 'Online', 'Y', '{"credit_card": true, "debit_card": true}', 
+    '{"upi": true, "mobile": true}', '20230101', '20231231', 'TAN11223', 
+    'UA1234567890', '{"param1": "consumernumber", "param2": "integer"}', 'ACTIVE', 
+    '2023-01-01 10:00:00', 'user1', '2023-01-01 12:00:00', 'Exact', 
+    'Standard', 'Validation_API_1', true, 30, '{"credit_card": true}', 
+    'REQUIRED', true
+);
+
+
+INSERT INTO public.bbps_biller_details (
+    blr_id, blr_name, blr_alias_name, blr_category_name, blr_linked_ou_default, 
+    blr_linked_ou_backup_1, blr_linked_ou_backup_2, blr_linked_ou_backup_3, 
+    parent_blr_id, is_parent_blr, blr_mode, blr_accepts_adhoc, blr_payment_modes, 
+    blr_payment_channels, blr_effctv_from, blr_effctv_to, blr_tan, blr_uaadhaar, 
+    blr_customer_params, entity_status, crtn_ts, crtn_user_id, updt_ts, 
+    blr_pmt_amt_exactness, fetch_requirement, support_validation_api, 
+    support_402_api_flag, blr_timeout, blr_payment_modes_402, plan_mdm_requirement, 
+    upms_support_presentment_registration_flag
+) VALUES
+(
+    'TNEB00000IND01', 'Tamil Nadu electricity', 'Electricity', 'Gas', 'I021', 'I021', 'I021', 'I021', 
+    'I021', 'Y', 'Online', 'Y', '{"credit_card": true, "debit_card": true}', 
+    '{"upi": true, "mobile_banking": true}', '20230101', '20281031', 'TAN44556', 
+    'UA1234567890', '{"param1": "consumernumber", "param2": "integer"}', 'ACTIVE', 
+    '2023-01-01 10:00:00', 'user1', '2023-01-01 12:00:00', 'Exact', 
+    'MANDATORY', 'NOT_MANDATORY', true, 30, '{"credit_card": true}', 
+    'NOTREQUIRED', true
+);
+
+
+INSERT INTO public.bbps_biller_details (
+    blr_id, blr_name, blr_alias_name, blr_category_name, blr_linked_ou_default, 
+    blr_linked_ou_backup_1, blr_linked_ou_backup_2, blr_linked_ou_backup_3, 
+    parent_blr_id, is_parent_blr, blr_mode, blr_accepts_adhoc, blr_payment_modes, 
+    blr_payment_channels, blr_effctv_from, blr_effctv_to, blr_tan, blr_uaadhaar, 
+    blr_customer_params, entity_status, crtn_ts, crtn_user_id, updt_ts, 
+    blr_pmt_amt_exactness, fetch_requirement, support_validation_api, 
+    support_402_api_flag, blr_timeout, blr_payment_modes_402, plan_mdm_requirement, 
+    upms_support_presentment_registration_flag
+) VALUES
+(
+    'HPCLO0000NAT01', 'HPCL', 'HPCL', 'Gas', 'EU51', 'EU51', 'EU51', 'EU51', 
+    'EU51', 'Y', 'Online', 'Y', '{"credit_card": true, "debit_card": true}', 
+    '{"upi": true, "internet_banking": true}', '20230101', '20250901', 'TAN12345', 
+    'UA1234567890', '{"param1": "consumernumber", "param2": "integer"}', 'ACTIVE', 
+    '2023-01-01 10:00:00', 'user1', '2023-01-01 12:00:00', 'Exact', 
+    'MANDATORY', 'NOT_MANDATORY', true, 30, '{"credit_card": true}', 
+    'NOTREQUIRED', true
+);
+
+
+
+INSERT INTO public.bbps_biller_details (
+    blr_id, blr_name, blr_alias_name, blr_category_name, blr_linked_ou_default, 
+    blr_linked_ou_backup_1, blr_linked_ou_backup_2, blr_linked_ou_backup_3, 
+    parent_blr_id, is_parent_blr, blr_mode, blr_accepts_adhoc, blr_payment_modes, 
+    blr_payment_channels, blr_effctv_from, blr_effctv_to, blr_tan, blr_uaadhaar, 
+    blr_customer_params, entity_status, crtn_ts, crtn_user_id, updt_ts, 
+    blr_pmt_amt_exactness, fetch_requirement, support_validation_api, 
+    support_402_api_flag, blr_timeout, blr_payment_modes_402, plan_mdm_requirement, 
+    upms_support_presentment_registration_flag
+) VALUES
+(
+    'ANDH00000ANPAO', 'ANDH', 'ANDH', 'Taxes', 'SB51', 'SB51', 'SB51', 'SB51', 
+    'SB51', 'Y', 'Online', 'Y', '{"credit_card": true, "debit_card": true}', 
+    '{"upi": true, "internet_banking": true}', '20230101', '20290601', 'TAN78901', 
+    'UA1234567890', '{"param1": "consumernumber", "param2": "integer"}', 'ACTIVE', 
+    '2023-01-01 10:00:00', 'user1', '2023-01-01 12:00:00', 'Exact', 
+    'MANDATORY', 'NOT_MANDATORY', true, 30, '{"credit_card": true}', 
+    'NOTREQUIRED', true
+);
+
+
+INSERT INTO public.bbps_biller_details (
+    blr_id, blr_name, blr_alias_name, blr_category_name, blr_linked_ou_default, 
+    blr_linked_ou_backup_1, blr_linked_ou_backup_2, blr_linked_ou_backup_3, 
+    parent_blr_id, is_parent_blr, blr_mode, blr_accepts_adhoc, blr_payment_modes, 
+    blr_payment_channels, blr_effctv_from, blr_effctv_to, blr_tan, blr_uaadhaar, 
+    blr_customer_params, entity_status, crtn_ts, crtn_user_id, updt_ts, 
+    blr_pmt_amt_exactness, fetch_requirement, support_validation_api, 
+    support_402_api_flag, blr_timeout, blr_payment_modes_402, plan_mdm_requirement, 
+    upms_support_presentment_registration_flag
+) VALUES
+(
+    'IIFLOOOOONATD9', 'IIFL', 'IIFL', 'Loan', 'AX91', 'AX91', 'AX91', 'AX91', 
+    'AX91', 'Y', 'Online', 'Y', '{"credit_card": true, "debit_card": true}', 
+    '{"upi": true, "internet_banking": true}', '20230101', '20260601', 'TAN78801', 
+    'UA1234567890', '{"param1": "consumernumber", "param2": "integer"}', 'ACTIVE', 
+    '2023-01-01 10:00:00', 'user1', '2023-01-01 12:00:00', 'Exact', 
+    'MANDATORY', 'NOT_MANDATORY', true, 30, '{"credit_card": true}', 
+    'NOTREQUIRED', true
+);
+
+
+
+INSERT INTO public.bbps_biller_details (
+    blr_id, blr_name, blr_alias_name, blr_category_name, blr_linked_ou_default, 
+    blr_linked_ou_backup_1, blr_linked_ou_backup_2, blr_linked_ou_backup_3, 
+    parent_blr_id, is_parent_blr, blr_mode, blr_accepts_adhoc, blr_payment_modes, 
+    blr_payment_channels, blr_effctv_from, blr_effctv_to, blr_tan, blr_uaadhaar, 
+    blr_customer_params, entity_status, crtn_ts, crtn_user_id, updt_ts, 
+    blr_pmt_amt_exactness, fetch_requirement, support_validation_api, 
+    support_402_api_flag, blr_timeout, blr_payment_modes_402, plan_mdm_requirement, 
+    upms_support_presentment_registration_flag
+) VALUES
+(
+    'SBIC00000NATDN', 'SBIC', 'SBIC', 'Credit Card', 'SB51', 'SB51', 'SB51', 'SB51', 
+    'SB51', 'Y', 'Online', 'Y', '{"credit_card": true, "debit_card": true}', 
+    '{"upi": true, "wallet": true}', '20230101', '20250601', 'TAN78801', 
+    'UA1234567890', '{"param1": "consumernumber", "param2": "integer"}', 'ACTIVE', 
+    '2023-01-01 10:00:00', 'user1', '2023-01-01 12:00:00', 'Exact', 
+    'MANDATORY', 'NOT_MANDATORY', true, 30, '{"credit_card": true}', 
+    'NOTREQUIRED', true
+);
+
+
+
+INSERT INTO public.bbps_biller_details (
+    blr_id, blr_name, blr_alias_name, blr_category_name, blr_linked_ou_default, 
+    blr_linked_ou_backup_1, blr_linked_ou_backup_2, blr_linked_ou_backup_3, 
+    parent_blr_id, is_parent_blr, blr_mode, blr_accepts_adhoc, blr_payment_modes, 
+    blr_payment_channels, blr_effctv_from, blr_effctv_to, blr_tan, blr_uaadhaar, 
+    blr_customer_params, entity_status, crtn_ts, crtn_user_id, updt_ts, 
+    blr_pmt_amt_exactness, fetch_requirement, support_validation_api, 
+    support_402_api_flag, blr_timeout, blr_payment_modes_402, plan_mdm_requirement, 
+    upms_support_presentment_registration_flag
+) VALUES
+(
+    'KOTA0000ONATED', 'KOTA', 'KOTA', 'Loan', 'KM11', 'KM11', 'KM11', 'KM11', 
+    'KM11', 'Y', 'Online', 'Y', '{"credit_card": true, "debit_card": true}', 
+    '{"cash": true, "internet_banking": true}', '20230101', '20251031', 'TAN11223', 
+    'UA1234567890', '{"param1": "consumernumber", "param2": "integer"}', 'ACTIVE', 
+    '2023-01-01 10:00:00', 'user1', '2023-01-01 12:00:00', 'Exact', 
+    'MANDATORY', 'NOT_MANDATORY', true, 30, '{"credit_card": true}', 
+    'NOTREQUIRED', true
+);
+
+
+INSERT INTO public.bbps_biller_details (
+    blr_id, blr_name, blr_alias_name, blr_category_name, blr_linked_ou_default, 
+    blr_linked_ou_backup_1, blr_linked_ou_backup_2, blr_linked_ou_backup_3, 
+    parent_blr_id, is_parent_blr, blr_mode, blr_accepts_adhoc, blr_payment_modes, 
+    blr_payment_channels, blr_effctv_from, blr_effctv_to, blr_tan, blr_uaadhaar, 
+    blr_customer_params, entity_status, crtn_ts, crtn_user_id, updt_ts, 
+    blr_pmt_amt_exactness, fetch_requirement, support_validation_api, 
+    support_402_api_flag, blr_timeout, blr_payment_modes_402, plan_mdm_requirement, 
+    upms_support_presentment_registration_flag
+) VALUES
+(
+    'DISH00000NATO1', 'DISH', 'DISH', 'DTH', 'EU51', 'EU51', 'EU51', 'EU51', 
+    'EU51', 'Y', 'Online', 'Y', '{"credit_card": true, "debit_card": true}', 
+    '{"upi": true, "internet": true}', '20230101', '20271131', 'TAN44599', 
+    'UA1234567890', '{"param1": "consumernumber", "param2": "integer"}', 'ACTIVE', 
+    '2023-01-01 10:00:00', 'user1', '2023-01-01 12:00:00', 'Exact', 
+    'NOT_MANDATORY', 'MANDATORY', true, 30, '{"credit_card": true}', 
+    'NOTREQUIRED', true
+);
+
+
+
+INSERT INTO public.bbps_biller_details (
+    blr_id, blr_name, blr_alias_name, blr_category_name, blr_linked_ou_default, 
+    blr_linked_ou_backup_1, blr_linked_ou_backup_2, blr_linked_ou_backup_3, 
+    parent_blr_id, is_parent_blr, blr_mode, blr_accepts_adhoc, blr_payment_modes, 
+    blr_payment_channels, blr_effctv_from, blr_effctv_to, blr_tan, blr_uaadhaar, 
+    blr_customer_params, entity_status, crtn_ts, crtn_user_id, updt_ts, 
+    blr_pmt_amt_exactness, fetch_requirement, support_validation_api, 
+    support_402_api_flag, blr_timeout, blr_payment_modes_402, plan_mdm_requirement, 
+    upms_support_presentment_registration_flag
+) VALUES
+(
+    'VIDEOCONONATO1', 'VID', 'VID', 'Mobile', 'EU51', 'EU51', 'EU51', 'EU51', 
+    'EU51', 'Y', 'Online', 'Y', '{"credit_card": true, "debit_card": true}', 
+    '{"internet": true, "internet_banking": true}', '20230101', '20271231', 'TAN78901', 
+    'UA1234567890', '{"param1": "consumernumber", "param2": "integer"}', 'ACTIVE', 
+    '2023-01-01 10:00:00', 'user1', '2023-01-01 12:00:00', 'Exact', 
+    'NOT_MANDATORY', 'MANDATORY', true, 30, '{"credit_card": true}', 
+    'NOTREQUIRED', true
+);
+
+
+INSERT INTO public.bbps_biller_details (
+    blr_id, blr_name, blr_alias_name, blr_category_name, blr_linked_ou_default, 
+    blr_linked_ou_backup_1, blr_linked_ou_backup_2, blr_linked_ou_backup_3, 
+    parent_blr_id, is_parent_blr, blr_mode, blr_accepts_adhoc, blr_payment_modes, 
+    blr_payment_channels, blr_effctv_from, blr_effctv_to, blr_tan, blr_uaadhaar, 
+    blr_customer_params, entity_status, crtn_ts, crtn_user_id, updt_ts, 
+    blr_pmt_amt_exactness, fetch_requirement, support_validation_api, 
+    support_402_api_flag, blr_timeout, blr_payment_modes_402, plan_mdm_requirement, 
+    upms_support_presentment_registration_flag
+) VALUES
+(
+    'MUTHOOOOONATBO', 'MUTH', 'MUTH', 'Utility', 'BA01', 'BA01', 'BA01', 'BA01', 
+    'BA01', 'Y', 'Online', 'Y', '{"credit_card": true, "debit_card": true}', 
+    '{"upi": true, "Kiosk": true}', '20230101', '20271231', 'TAN78701', 
+    'UA1234567890', '{"param1": "consumernumber", "param2": "integer"}', 'ACTIVE', 
+    '2023-01-01 10:00:00', 'user1', '2023-01-01 12:00:00', 'Exact', 
+    'NOT_MANDATORY', 'MANDATORY', true, 30, '{"credit_card": true}', 
+    'NOTREQUIRED', true
+);
+

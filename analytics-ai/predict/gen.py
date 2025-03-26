@@ -18,7 +18,7 @@ predefined_map = {
 }
 category_map = {
     "SURYOOOOONATLE": "Water",
-    "TNEB00000IND01": "Electicity",
+    "TNEB00000IND01": "Electricity",
     "HPCLO0000NAT01": "Gas",
     "ANDH00000ANPAO": "Taxes",
     "IIFLOOOOONATD9": "IIFLOOOOONATD9",

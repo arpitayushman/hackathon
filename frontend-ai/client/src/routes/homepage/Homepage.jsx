@@ -84,7 +84,7 @@ const Homepage = () => {
         {/* <a onClick={startNewChat}>Start New Chat</a> */}
         <a href="http://localhost:8084/">Start New Chat</a>
         <a onClick={openModal}>Predictive Analysis</a>
-        <a style={{disable:true}}>Stuck Transactions</a>
+        <Link to={"/stuckDashboard"}>Stuck Transactions</Link>
         {/* <a style={{disable:true}}>what Else</a> */}
         </div>
       </div>

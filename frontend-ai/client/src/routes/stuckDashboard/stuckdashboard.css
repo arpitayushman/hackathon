@@ -1,0 +1,34 @@
+.stuckdashboardpage{
+    height: 50%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  
+
+
+
+}
+.image-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+.image-container h1{
+    text-align: center;
+}
+#triggerBtn{
+    padding: 10px 30px;
+    background-color: #217bfe;
+    color: white;
+    border-radius: 20px;
+    font-size: 13px;
+    
+
+    &:hover {
+      background-color: white;
+      color: #217bfe;
+      cursor: pointer;
+    }
+  }

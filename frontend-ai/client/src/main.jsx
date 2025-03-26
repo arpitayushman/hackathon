@@ -9,6 +9,7 @@ import RootLayout from "./layouts/rootLayout/RootLayout";
 import DashboardLayout from "./layouts/dashboardLayout/DashboardLayout";
 import SignInPage from "./routes/signInPage/signInPage";
 import SignUpPage from "./routes/signUpPage/signUpPage";
+import StuckDashboard from "./routes/stuckDashboard/StuckDashboard";
 
 const router = createBrowserRouter([
   {
@@ -32,6 +33,10 @@ const router = createBrowserRouter([
           {
             path: "/dashboard",
             element: <DashboardPage />,
+          },
+          {
+            path:"/stuckDashboard",
+            element:<StuckDashboard/>
           },
           {
             path: "/dashboard/chats/:id",
