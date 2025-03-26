@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 
 from vanna.flask import VannaFlaskApp
 
-
+# Frontend path is -> # path for frontend -> C:\Users\localadmin\anaconda3\Lib\site-packages\vanna\flask\auth.py
 load_dotenv()
 
 from functools import wraps
