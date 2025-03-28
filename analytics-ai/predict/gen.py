@@ -21,12 +21,12 @@ category_map = {
     "TNEB00000IND01": "Electricity",
     "HPCLO0000NAT01": "Gas",
     "ANDH00000ANPAO": "Taxes",
-    "IIFLOOOOONATD9": "IIFLOOOOONATD9",
+    "IIFLOOOOONATD9": "Education",
     "SBIC00000NATDN": "Credit Card",  
     "KOTA0000ONATED": "Loan",
     "DISH00000NATO1": "DTH",  
     "VIDEOCONONATO1": "Mobile", 
-    "MUTHOOOOONATBO": "Utility"
+    "MUTHOOOOONATBO": "Fastag"
 }
 predefined_compliance = {
     "BOU001": "Send failed to BOU",
@@ -52,15 +52,16 @@ def generate_random_data_bbps():
     cust_mobile_num = f"9{random.randint(100000000, 999999999)}"
     tran_ref_id = cou_id + f"TRN{generate_random_alphanumeric(8)}".upper()
     blr_id = predefined_map.get(bou_id)
-    agent_id = cou_id+ f"AGT{random.randint(1000, 9999)}"
+    agent_id = f"{cou_id[:2]}{random.randint(10, 14)}"
     last_upd_host = "127.0.0.1"
     last_upd_port = "9090"
     last_upd_site_cd = f"SITE{random.randint(0, 1)}"
-    random_days = random.randint(1, 180)
+    random_days = random.randint(1, 365)
     random_hour = random.randint(0, 23)
     random_minute = random.randint(0, 59)
     random_second = random.randint(0, 59)
-    crtn_ts = (datetime.now() - timedelta(days=random_days)- timedelta(hours=random_hour, minutes=random_minute, seconds=random_second)).strftime('%Y-%m-%d %H:%M:%S')
+    random_future_or_past = random.choice([-2, 1])
+    crtn_ts = (datetime.now() + random_future_or_past * (timedelta(days=random_days) + timedelta(hours=random_hour, minutes=random_minute, seconds=random_second))).strftime('%Y-%m-%d %H:%M:%S')
     settlement_cycle_id = f"SCYCLE{random.randint(100, 999)}"
     complaince_cd = ""
     complaince_reason = ""

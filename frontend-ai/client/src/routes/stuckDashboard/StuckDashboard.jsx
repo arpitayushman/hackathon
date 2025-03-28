@@ -38,7 +38,7 @@ const stuckData=[
 return (
     <div className="stuckdashboardpage">
 <div className="images-container">
-<h1>Stuck Transactions</h1>
+<h1>Abnormal Transactions</h1>
     </div>
     <table>
         <thead>
@@ -57,7 +57,7 @@ return (
               <td>{item.last_upt_ts}</td>
               <td>{item.duration_in_minutes}</td>
               <td>{item.leg}</td>
-              <td><a  id="triggerBtn" href="http://localhost:8084/">Trigger</a></td>
+              <td><a  id="triggerBtn">Trigger</a></td>
             </tr>
           ))}
         </tbody>

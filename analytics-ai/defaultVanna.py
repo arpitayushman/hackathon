@@ -65,6 +65,22 @@ vn.train(
     )
 """
 )
+vn.train(
+    ddl="""
+    CREATE TABLE public.bbps_ou_details ( ou_id varchar(4) NOT NULL, ou_type varchar(4) NULL, ou_name varchar(100) NULL, ou_effctv_from varchar(8) NULL, ou_effctv_to varchar(8) NULL, ou_endpoint_url varchar(100) NULL, ou_company_tan_no varchar(20) NULL, ou_uaadhar varchar(30) NULL, entity_status varchar(20) NOT NULL, crtn_ts timestamp NULL, crtn_user_id varchar(45) NULL, updt_ts timestamp NULL, updt_user_id varchar(45) NULL, gstin varchar(30) NULL, gst_state_code varchar(3) NULL, ou_group_name varchar(8) NULL, ndc_group varchar(4) NULL, is_parent_ou varchar(1) NULL, upms_request_response_format varchar(10) NULL, upms_end_point_url varchar(100) NULL, upms_supports_cou_reg_api bool NULL, upms_supports_blr_reg_api bool NULL, CONSTRAINT bbps_ou_details_pkey PRIMARY KEY (ou_id) );
+"""
+)
+vn.train(
+    ddl="""
+    CREATE TABLE public.bbps_biller_details ( blr_id varchar(30) NOT NULL, blr_name varchar(100) NULL, blr_alias_name varchar(100) NULL, blr_category_name varchar(100) NULL, blr_linked_ou_default varchar(30) NULL, blr_linked_ou_backup_1 varchar(30) NULL, blr_linked_ou_backup_2 varchar(30) NULL, blr_linked_ou_backup_3 varchar(30) NULL, parent_blr_id varchar(30) NULL, is_parent_blr bpchar(1) NULL, blr_mode varchar(20) NULL, blr_accepts_adhoc varchar(1) NULL, blr_payment_modes json NULL, blr_payment_channels json NULL, blr_effctv_from varchar(8) NULL, blr_effctv_to varchar(8) NULL, blr_tan varchar(20) NULL, blr_uaadhaar varchar(30) NULL, blr_customer_params json NULL, entity_status varchar(20) NOT NULL, crtn_ts timestamp NULL, crtn_user_id varchar(45) NULL, updt_ts timestamp NULL, blr_pmt_amt_exactness varchar(10) NULL, fetch_requirement varchar(20) NULL, support_validation_api varchar(20) NULL, support_402_api_flag bool NULL, blr_timeout int2 NULL, blr_payment_modes_402 json NULL, plan_mdm_requirement varchar(20) NULL, upms_support_presentment_registration_flag bool NULL, CONSTRAINT bbps_biller_details_pkey PRIMARY KEY (blr_id) );
+
+"""
+)
+vn.train(
+    ddl="""
+    CREATE TABLE public.bbps_certificates_details ( cert_id int8 NOT NULL, ou_id varchar(4) NULL, cert_type varchar(10) NULL, effctv_from varchar(8) NULL, effctv_to varchar(8) NULL, entity_status varchar(20) NOT NULL, crtn_ts timestamp NULL, crtn_user_id varchar(45) NULL, CONSTRAINT bbps_certificates_details_pkey PRIMARY KEY (cert_id, entity_status), CONSTRAINT fk_bbps_certificates_details_ou FOREIGN KEY (ou_id) REFERENCES public.bbps_ou_details (ou_id) ON DELETE SET NULL ON UPDATE CASCADE );
+"""
+)
 training_data = vn.get_training_data()
 training_data
 
