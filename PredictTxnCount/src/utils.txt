@@ -1,0 +1,105 @@
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+import matplotlib.pyplot as plt
+import seaborn as sns
+import os
+
+def load_data(file_path):
+    """Load the CSV data file"""
+    try:
+        df = pd.read_csv(file_path)
+        print(f"Data loaded successfully: {df.shape[0]} rows and {df.shape[1]} columns")
+        return df
+    except Exception as e:
+        print(f"Error loading data: {e}")
+        return None
+
+def preprocess_data(df):
+    """Preprocess the data for modeling"""
+    # Make a copy to avoid modifying the original dataframe
+    df_processed = df.copy()
+    
+    # Convert timestamp to datetime
+    df_processed['crtn_ts'] = pd.to_datetime(df_processed['crtn_ts'])
+    
+    # Extract features from datetime
+    df_processed['month'] = df_processed['crtn_ts'].dt.month
+    df_processed['day'] = df_processed['crtn_ts'].dt.day
+    df_processed['hour'] = df_processed['crtn_ts'].dt.hour
+    df_processed['dayofweek'] = df_processed['crtn_ts'].dt.dayofweek
+    
+    # Handle categorical variables
+    categorical_cols = ['txn_type', 'mti', 'blr_category', 'response_code', 
+                        'payment_channel', 'cou_id', 'bou_id', 'bou_status',
+                        'payment_mode', 'on_us']
+    
+    # Create label encoders for each categorical variable
+    encoders = {}
+    for col in categorical_cols:
+        if col in df_processed.columns:
+            le = LabelEncoder()
+            df_processed[f'{col}_encoded'] = le.fit_transform(df_processed[col])
+            encoders[col] = le
+    
+    # Handle missing values
+    df_processed = df_processed.fillna(0)
+    
+    return df_processed, encoders
+
+def engineer_features(df, encoders):
+    """Create additional features for the model"""
+    df_featured = df.copy()
+    
+    # Create group-based features
+    # Average transaction amount by biller category
+    biller_avg_txn = df_featured.groupby('blr_category')['txn_amount'].transform('mean')
+    df_featured['biller_avg_txn'] = biller_avg_txn
+    
+    # Transaction counts by payment channel
+    channel_counts = df_featured.groupby('payment_channel')['txn_amount'].transform('count')
+    df_featured['channel_txn_count'] = channel_counts
+    
+    # Success rate by payment mode
+    if 'response_code' in encoders:
+        success_code = encoders['response_code'].transform(['000'])[0] if '000' in encoders['response_code'].classes_ else 0
+        success_rate = df_featured.groupby('payment_mode')['response_code_encoded'].transform(
+            lambda x: np.mean(x == success_code)
+        )
+        df_featured['payment_mode_success_rate'] = success_rate
+    else:
+        df_featured['payment_mode_success_rate'] = 0.5  # Default value
+    
+    return df_featured
+
+def prepare_modeling_data(df, feature_cols=None):
+    """Prepare features and target for modeling"""
+    # Define features if not provided
+    if feature_cols is None:
+        feature_cols = [
+            'payment_channel_encoded', 'payment_mode_encoded', 'response_code_encoded',
+            'bou_status_encoded', 'on_us_encoded', 'blr_category_encoded',
+            'month', 'day', 'hour', 'dayofweek',
+            'biller_avg_txn', 'channel_txn_count', 'payment_mode_success_rate'
+        ]
+    
+    # Ensure all feature columns exist
+    for col in feature_cols:
+        if col not in df.columns:
+            print(f"Warning: Column {col} not found. Adding with zeros.")
+            df[col] = 0
+    
+    # Select features and target
+    X = df[feature_cols]
+    y = df['txn_amount'] if 'txn_amount' in df.columns else None
+    
+    # Scale the features
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
+    
+    return X_scaled, y, scaler, feature_cols
+
+def create_output_dirs():
+    """Create output directories if they don't exist"""
+    os.makedirs('models', exist_ok=True)
+    os.makedirs('output', exist_ok=True)

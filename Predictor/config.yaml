@@ -1,0 +1,22 @@
+# config.yaml
+data:
+  raw_data_path: 'data/raw/transaction_data.csv'
+  processed_train_path: 'data/processed/train_data.csv'
+  processed_test_path: 'data/processed/test_data.csv'
+
+model:
+  save_path: 'models/saved_model.pkl'
+  
+preprocessing:
+  date_columns: ['crtn_ts']
+  categorical_columns: ['blr_category', 'payment_channel', 'cou_id', 'status']
+  numerical_columns: ['txn_amount']
+
+training:
+  random_state: 42
+  test_size: 0.2
+  cv_folds: 5
+  
+prediction:
+  default_category: 'All'
+  default_cou_id: 'All'
