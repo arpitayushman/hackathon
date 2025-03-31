@@ -52,7 +52,7 @@ const Homepage = () => {
      imageUrls[image.filename] = `data:${image.mime_type};base64,${image.data}`;
      }
    });
-
+console.log(csvData);
    navigate("/dashboard", { state: { csvData, imageUrls } });
 } catch (error) {
       console.error("Error fetching or extracting ZIP:", error);
@@ -84,7 +84,7 @@ const Homepage = () => {
         {/* <a onClick={startNewChat}>Start New Chat</a> */}
         <a href="http://localhost:8084/">Start New Chat</a>
         <a onClick={openModal}>Predictive Analysis</a>
-        <Link to={"/stuckDashboard"}>Stuck Transactions</Link>
+        <Link to={"/stuckDashboard"}>Abnormal Transactions</Link>
         {/* <a style={{disable:true}}>what Else</a> */}
         </div>
       </div>

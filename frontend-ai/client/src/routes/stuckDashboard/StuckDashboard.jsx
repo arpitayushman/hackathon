@@ -10,26 +10,27 @@ const stuckData=[
     "refid": "MUTH00000NATYF400063ST01HINOSHUOIN",
     "last_upt_ts": "2025-03-25 12:48:07.240",
     "duration_in_minutes" :20,
-    "leg" :2
+    "leg" :"Request send to BOU"
+  
     
     },
     {
     "refid" :"MUTH00000NATYF400063ST01HINOSHUOIN",
     "last_upt_ts": "2025-03-25 12:48:07.240",
     "duration_in_minutes" :20,
-    "leg" : 2
+    "leg" : "Request send to BOU"
     },
     {
     "refid": "MUTH00000NATYF400063ST01HINOSHUOIN",
     "last_upt_ts": "2025-03-25 12:48:07.240",
     "duration_in_minutes" :20,
-    "leg" : 3
+    "leg" : "Response received from BOU"
     },
     {
     "refid": "MUTH00000NATYF400063ST01HINOSHUOIN",
     "last_upt_ts": "2025-03-25 12:48:07.240",
     "duration_in_minutes" :20,
-    "leg" :1
+    "leg" :"Request Recieved from COU"
     
     }
 ]
@@ -38,9 +39,9 @@ const stuckData=[
 return (
     <div className="stuckdashboardpage">
 <div className="images-container">
-<h1>Abnormal Transactions</h1>
+<h1 style={{marginLeft:"29px",marginTop:"10px"}}>Abnormal Transactions</h1>
     </div>
-    <table>
+    <table id="stucktable"> 
         <thead>
           <tr>
             <th>Reference ID</th>

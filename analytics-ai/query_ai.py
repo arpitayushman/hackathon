@@ -15,7 +15,11 @@ from cache import MemoryCache
 import vanna
 from vanna.remote import VannaDefault
 
+# api_key = "51eed2013eaa421580f1f6ffa40f5d9c"  
+# vanna_model_name = "akashg"
 
+api_key = "0dc528cf0af64aeb968cece2e3eb8cc1"
+vanna_model_name = "terror-ai"
 vn = VannaDefault(model=vanna_model_name, api_key=api_key)
 
 # app = Flask(__name__, static_url_path="")

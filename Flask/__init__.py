@@ -1206,7 +1206,9 @@ class VannaFlaskApp(VannaFlaskAPI):
         debug=True,
         allow_llm_to_see_data=False,
         # logo="https://img.vanna.ai/vanna-flask.svg",
-        logo="http://localhost:5173/logo.png",
+       
+        logo="http://localhost:5173/logo2.png",
+    
         title="Welcome to Terror.AI",
         subtitle="Your AI-powered copilot for SQL queries.",
         show_training_data=True,

@@ -3,10 +3,6 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-  
-
-
-
 }
 .image-container{
     display: flex;
@@ -31,4 +27,10 @@
       color: #217bfe;
       cursor: pointer;
     }
+  }
+
+  #stucktable{
+   margin-left: 29px;
+   margin-top: 40px;
+    width: 95%;
   }
