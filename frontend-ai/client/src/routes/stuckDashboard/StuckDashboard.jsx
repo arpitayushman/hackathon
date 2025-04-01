@@ -34,8 +34,19 @@ const stuckData=[
     
     }
 ]
+const [showModal, setShowModal] = useState(false);
 
+const handleTriggerClick = () => {
+  setShowModal(true);
+  // setTimeout(setShowModal(false),3000);
+  setTimeout(() => {
+    setShowModal(false);
+  }, 4000);
+};
 
+const closeModal = () => {
+  setShowModal(false);
+};
 return (
     <div className="stuckdashboardpage">
 <div className="images-container">
@@ -58,12 +69,20 @@ return (
               <td>{item.last_upt_ts}</td>
               <td>{item.duration_in_minutes}</td>
               <td>{item.leg}</td>
-              <td><a  id="triggerBtn">Trigger</a></td>
+              <td><a id="triggerBtn" onClick={handleTriggerClick}>Trigger</a></td>
             </tr>
           ))}
         </tbody>
       </table>
-
+      {showModal && (
+        <div className="modal-overlay1" onClick={closeModal}>
+          <div className="modal-content1" onClick={(e) => e.stopPropagation()}>
+            <h2>✅ Mail Sent!</h2>
+            <p>The mail has been successfully sent to the support team.</p>
+            <button className="close-btn" onClick={closeModal}>Close</button>
+          </div>
+        </div>
+      )}
 
     </div>
 );

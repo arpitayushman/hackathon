@@ -82,8 +82,8 @@ console.log(csvData);
         </h3>
         <div style={{display:"flex",flexDirection:"row",justifyContent:"space-between",width:"100%"}}>
         {/* <a onClick={startNewChat}>Start New Chat</a> */}
-        <a href="http://localhost:8084/">Start New Chat</a>
-        <a onClick={openModal}>Predictive Analysis</a>
+        <a href="http://localhost:8084/">Terror AI Bot</a>
+        <a onClick={openModal}>Predictive Bot</a>
         <Link to={"/stuckDashboard"}>Abnormal Transactions</Link>
         {/* <a style={{disable:true}}>what Else</a> */}
         </div>

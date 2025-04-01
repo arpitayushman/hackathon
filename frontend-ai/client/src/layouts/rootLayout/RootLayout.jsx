@@ -14,26 +14,26 @@ const queryClient = new QueryClient();
 
 const RootLayout = () => {
   return (
-    <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
-      <QueryClientProvider client={queryClient}>
+    // <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
+    //   <QueryClientProvider client={queryClient}>
         <div className="rootLayout">
           <header>
             <Link to="/" className="logo">
               <img src="/logo2.png" alt="" />
               <span>RuntimeTerror AI</span>
             </Link>
-            <div className="user">
+            {/* <div className="user">
               <SignedIn>
                 <UserButton />
               </SignedIn>
-            </div>
+            </div> */}
           </header>
           <main>
             <Outlet />
           </main>
         </div>
-      </QueryClientProvider>
-    </ClerkProvider>
+    //   </QueryClientProvider>
+    // </ClerkProvider>
   );
 };
 

@@ -1209,7 +1209,7 @@ class VannaFlaskApp(VannaFlaskAPI):
        
         logo="http://localhost:5173/logo2.png",
     
-        title="Welcome to Terror.AI",
+        title="Welcome to RunTime Terror.AI",
         subtitle="Your AI-powered copilot for SQL queries.",
         show_training_data=True,
         suggested_questions=True,

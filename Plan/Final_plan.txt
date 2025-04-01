@@ -1,0 +1,46 @@
+SQL BOT:
+
+Demo 1:
+
+Give me the month wise transaction count in human readable date format from September 2024 to March 2025 for the Electricity category.
+What is the change in transaction count for each COU between January 2025 and February 2025?
+Change graph.
+
+Demo 2:
+
+Give me change in transaction count from January 2025 to February 2025 for BD01 COU and Transaction data categorized by agent.
+
+----bar graph.
+
+
+Backup based on time constraint
+
+1.Please provide the transaction failure rates for PhonePe for the last one month,
+2.for each biller
+3.identify the top 3 billers with the highest failure rates.
+
+==========================================================================================================================================================================
+
+Predictive analysis taken care by Karan and Chandu
+
+==========================================================================================================================================================================
+
+Abnormal transaction: Akash
+
+=========================================================================================================================================================================
+
+Presentation by:
+Karan
+Akash
+Ishwarya
+
+Demo:
+
+Arpit
+
+Queries:
+
+Arpit
+Akash
+Chandan(only for Predictive analysis)*
+
